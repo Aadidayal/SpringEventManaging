@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     
-    // Create a new user
+    // Create 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
@@ -28,14 +28,14 @@ public class UserController {
         }
     }
     
-    // Get all users
+    // Get all
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
     
-    // Get user by ID
+    // Get ID
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
@@ -46,7 +46,7 @@ public class UserController {
         }
     }
     
-    // Get user by email
+   
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.getUserByEmail(email);
@@ -56,8 +56,8 @@ public class UserController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-    
-    // Update user
+
+    // Update
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         try {
@@ -68,7 +68,6 @@ public class UserController {
         }
     }
     
-    // Delete user
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         try {
