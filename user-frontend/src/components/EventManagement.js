@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import EventForm from './EventForm';
 import EventList from './EventList';
+import eventService from '../services/eventService';
 import './EventManagement.css';
 
 const EventManagement = () => {
   const [refresh, setRefresh] = useState(false);
   const [activeTab, setActiveTab] = useState('list'); // 'list' or 'create'
+  const [loading, setLoading] = useState(false);
 
-  const handleEventCreated = () => {
-    setRefresh(prev => !prev);
-    setActiveTab('list'); // Switch to list view after creating
+  const handleEventCreated = async (eventData) => {
+    try {
+      setLoading(true);
+      await eventService.createEvent(eventData);
+      setRefresh(prev => !prev);
+      setActiveTab('list'); // Switch to list view after creating
+      alert('Event created successfully!');
+    } catch (error) {
+      console.error('Error creating event:', error);
+      alert('Failed to create event. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,6 +55,7 @@ const EventManagement = () => {
         {activeTab === 'create' && (
           <EventForm 
             onEventCreated={handleEventCreated}
+            loading={loading}
           />
         )}
       </div>

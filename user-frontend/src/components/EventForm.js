@@ -41,7 +41,7 @@ const EventForm = ({ onEventCreated, loading }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!event.title || !event.eventDate || !event.location || !event.capacity || !event.organizerId) {
       alert('Please fill all required fields');
@@ -55,17 +55,21 @@ const EventForm = ({ onEventCreated, loading }) => {
       organizerId: parseInt(event.organizerId)
     };
     
-    onEventCreated(eventData);
-    
-    // Reset form
-    setEvent({
-      title: '',
-      description: '',
-      eventDate: '',
-      location: '',
-      capacity: '',
-      organizerId: ''
-    });
+    try {
+      await onEventCreated(eventData);
+      
+      // Reset form only after successful creation
+      setEvent({
+        title: '',
+        description: '',
+        eventDate: '',
+        location: '',
+        capacity: '',
+        organizerId: ''
+      });
+    } catch (error) {
+      console.error('Error in form submission:', error);
+    }
   };
 
   return (
