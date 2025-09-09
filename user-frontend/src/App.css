@@ -1,11 +1,10 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -18,14 +17,74 @@
 }
 
 .App-header h1 {
-  margin-bottom: 20px;
-  color: #61dafb;
+  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.app-subtitle {
+  color: #e0e8ff;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+
+/* Module Navigation */
+.module-navigation {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.module-btn {
+  padding: 15px 30px;
+  font-size: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: 600;
+  backdrop-filter: blur(5px);
+}
+
+.module-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.module-btn.active {
+  background: rgba(255, 255, 255, 0.9);
+  color: #4a5568;
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* Module containers */
+.user-module,
+.event-module {
+  width: 100%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  color: #333;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
 }
 
 .App-header h2 {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  color: #fff;
+  color: #333;
 }
 
 /* Form styling */
@@ -42,11 +101,35 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 button:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .module-navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .module-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .user-module,
+  .event-module {
+    padding: 20px;
+    margin: 0 10px;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
 }
 
 button:disabled {

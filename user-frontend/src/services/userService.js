@@ -2,13 +2,23 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8080/api/users';
 
+// Configure axios defaults
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.withCredentials = false;
+
 const userService = {
   // Get all users
   getAllUsers: async () => {
     try {
-      const response = await axios.get(API_BASE_URL);
+      const response = await axios.get(API_BASE_URL, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
+      console.error('Error fetching users:', error);
       throw new Error('Failed to fetch users');
     }
   },
@@ -36,7 +46,12 @@ const userService = {
   // Create new user
   createUser: async (user) => {
     try {
-      const response = await axios.post(API_BASE_URL, user);
+      const response = await axios.post(API_BASE_URL, user, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to create user');

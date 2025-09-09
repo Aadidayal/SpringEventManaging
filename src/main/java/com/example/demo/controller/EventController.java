@@ -17,7 +17,7 @@ public class EventController {
     @Autowired
     private EventService eventService;
     
-    // Create event
+    // Create 
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
         try {
@@ -28,14 +28,14 @@ public class EventController {
         }
     }
     
-    // Get all events
+    // Get 
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         List<Event> events = eventService.getAllEvents();
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
     
-    // Get event by ID
+    //  ID
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id) {
         Optional<Event> event = eventService.getEventById(id);
@@ -46,14 +46,14 @@ public class EventController {
         }
     }
     
-    // Get events by organizer
+    //  organizer
     @GetMapping("/organizer/{organizerId}")
     public ResponseEntity<List<Event>> getEventsByOrganizer(@PathVariable Long organizerId) {
         List<Event> events = eventService.getEventsByOrganizer(organizerId);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
     
-    // Update event
+    // Update
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
         try {
@@ -64,7 +64,7 @@ public class EventController {
         }
     }
     
-    // Delete event
+    // Delete 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteEvent(@PathVariable Long id) {
         try {
@@ -75,14 +75,14 @@ public class EventController {
         }
     }
     
-    // Search events by title
+    // S title
     @GetMapping("/search/title/{title}")
     public ResponseEntity<List<Event>> searchEventsByTitle(@PathVariable String title) {
         List<Event> events = eventService.searchEventsByTitle(title);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
     
-    // Search events by location
+    //  S location
     @GetMapping("/search/location/{location}")
     public ResponseEntity<List<Event>> searchEventsByLocation(@PathVariable String location) {
         List<Event> events = eventService.searchEventsByLocation(location);

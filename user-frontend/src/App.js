@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserForm from './components/UserForm';
 import UserList from './components/UserList';
 import UserEditModal from './components/UserEditModal';
+import EventManagement from './components/EventManagement';
 import Message from './components/Message';
 import userService from './services/userService';
 import './App.css';
@@ -11,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [editingUser, setEditingUser] = useState(null);
+  const [activeModule, setActiveModule] = useState('users'); // 'users' or 'events'
 
   // Show message with auto-dismiss
   const showMessage = (text, type = 'info') => {
@@ -109,7 +111,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>User System</h1>
+        <h1>🎯 Spring Event System</h1>
+        <p className="app-subtitle">Complete User & Event Management</p>
         
         <Message 
           message={message.text} 
@@ -117,26 +120,54 @@ function App() {
           onClose={() => setMessage({ text: '', type: '' })}
         />
 
-        <UserForm 
-          onUserCreated={handleUserCreated}
-          loading={loading}
-        />
+        {/* Module Navigation */}
+        <div className="module-navigation">
+          <button 
+            className={`module-btn ${activeModule === 'users' ? 'active' : ''}`}
+            onClick={() => setActiveModule('users')}
+          >
+            👥 User Management
+          </button>
+          <button 
+            className={`module-btn ${activeModule === 'events' ? 'active' : ''}`}
+            onClick={() => setActiveModule('events')}
+          >
+            📅 Event Management
+          </button>
+        </div>
 
-        <UserList 
-          users={users}
-          onDeleteUser={handleDeleteUser}
-          onEditUser={handleEditUser}
-          onRefresh={fetchUsers}
-          loading={loading}
-        />
+        {/* User Management Module */}
+        {activeModule === 'users' && (
+          <div className="user-module">
+            <UserForm 
+              onUserCreated={handleUserCreated}
+              loading={loading}
+            />
 
-        {editingUser && (
-          <UserEditModal
-            user={editingUser}
-            onClose={handleCloseEdit}
-            onUpdate={handleUserUpdated}
-            loading={loading}
-          />
+            <UserList 
+              users={users}
+              onDeleteUser={handleDeleteUser}
+              onEditUser={handleEditUser}
+              onRefresh={fetchUsers}
+              loading={loading}
+            />
+
+            {editingUser && (
+              <UserEditModal
+                user={editingUser}
+                onClose={handleCloseEdit}
+                onUpdate={handleUserUpdated}
+                loading={loading}
+              />
+            )}
+          </div>
+        )}
+
+        {/* Event Management Module */}
+        {activeModule === 'events' && (
+          <div className="event-module">
+            <EventManagement />
+          </div>
         )}
       </header>
     </div>
