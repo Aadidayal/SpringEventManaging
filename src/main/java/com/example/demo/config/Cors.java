@@ -1,4 +1,4 @@
-package com.example.config;
+package com.example.demo.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;
@@ -11,7 +11,7 @@ public class Cors implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*")
+                .allowedOrigins("http://localhost:3000", "http://127.0.0.1:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
