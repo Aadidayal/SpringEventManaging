@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,25 +58,18 @@ public class UserController {
     }
 
     // Update
-    @PutMapping("/{id}") // this id is from path, need to go to exact this path to chck in postman
+    @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         try {
             User updatedUser = userService.updateUser(id, userDetails);
             return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            System.out.println("Update error: " + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(httpStatus.OK)
-//    public void delete (
-//            @PathVariable Long id
-//    ){
-//        userService.deleteUser(id);
-//    }
-
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         try {

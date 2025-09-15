@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class EventService {
     
@@ -19,37 +18,36 @@ public class EventService {
     @Autowired
     private UserRepository userRepository;
 
-    // Create event
     public Event createEvent(Event event) {
-        // Validate organizer exists
+        // organizer exists?
         Optional<User> organizer = userRepository.findById(event.getOrganizerId());
         if (organizer.isEmpty()) {
             throw new RuntimeException("Organizer not found with ID: " + event.getOrganizerId());
         }
         
-        // Set organizer name for easy display
+        // organizer name 
         User user = organizer.get();
         event.setOrganizerName(user.getFirstName() + " " + user.getLastName());
         
         return eventRepository.save(event);
     }
     
-    // Get all events
+    //all
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
     
-    // Get by ID
+    // ID
     public Optional<Event> getEventById(Long id) {
         return eventRepository.findById(id);
     }
     
-    // Get events by organizer
+    //organizer
     public List<Event> getEventsByOrganizer(Long organizerId) {
         return eventRepository.findByOrganizerId(organizerId);
     }
     
-    // Update event
+    // Update
     public Event updateEvent(Long id, Event eventDetails) {
         Optional<Event> existingEvent = eventRepository.findById(id);
         if (existingEvent.isEmpty()) {
@@ -66,7 +64,7 @@ public class EventService {
         return eventRepository.save(event);
     }
     
-    // Delete event
+    // Delete 
     public void deleteEvent(Long id) {
         if (!eventRepository.existsById(id)) {
             throw new RuntimeException("Event not found with ID: " + id);
@@ -74,12 +72,12 @@ public class EventService {
         eventRepository.deleteById(id);
     }
     
-    // Search events by title
+    // S title
     public List<Event> searchEventsByTitle(String title) {
         return eventRepository.findByTitleContainingIgnoreCase(title);
     }
     
-    // Search events by location
+    // S  location
     public List<Event> searchEventsByLocation(String location) {
         return eventRepository.findByLocationContainingIgnoreCase(location);
     }
