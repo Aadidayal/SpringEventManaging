@@ -119,11 +119,28 @@ function MainApp() {
 
   return (
     <div className="App">
+      {/* Floating decorative shapes */}
+      <div className="floating-shapes">
+        <div className="floating-shape"></div>
+        <div className="floating-shape"></div>
+        <div className="floating-shape"></div>
+        <div className="floating-shape"></div>
+        <div className="floating-shape"></div>
+        <div className="floating-shape"></div>
+      </div>
+
       <header className="App-header">
+
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '1100px' }}>
           <h1>🎯 Spring Event System</h1>
           <button onClick={handleLogout} className="module-btn" style={{ padding: '10px 16px' }}>Logout</button>
         </div>
+
+//         <h1>
+//           <span className="emoji">🎯</span>
+//           <span className="text-gradient">Spring Event System</span>
+//         </h1>
+
         <p className="app-subtitle">Complete User & Event Management</p>
         
         <Message 
