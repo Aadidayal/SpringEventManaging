@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import UserForm from './components/UserForm';
 import UserList from './components/UserList';
 import UserEditModal from './components/UserEditModal';
 import EventManagement from './components/EventManagement';
+import Login from './components/Login';
+import Signup from './components/Signup';
 import Message from './components/Message';
 import userService from './services/userService';
 import './App.css';
 
-function App() {
+function MainApp() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
@@ -108,6 +112,11 @@ function App() {
     fetchUsers();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('authUser');
+    navigate('/login');
+  };
+
   return (
     <div className="App">
       {/* Floating decorative shapes */}
@@ -121,10 +130,17 @@ function App() {
       </div>
 
       <header className="App-header">
-        <h1>
-          <span className="emoji">🎯</span>
-          <span className="text-gradient">Spring Event System</span>
-        </h1>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '1100px' }}>
+          <h1>🎯 Spring Event System</h1>
+          <button onClick={handleLogout} className="module-btn" style={{ padding: '10px 16px' }}>Logout</button>
+        </div>
+
+//         <h1>
+//           <span className="emoji">🎯</span>
+//           <span className="text-gradient">Spring Event System</span>
+//         </h1>
+
         <p className="app-subtitle">Complete User & Event Management</p>
         
         <Message 
@@ -184,6 +200,23 @@ function App() {
         )}
       </header>
     </div>
+  );
+}
+
+function ProtectedRoute({ children }) {
+  const isAuthed = !!localStorage.getItem('authUser');
+  return isAuthed ? children : <Navigate to="/login" replace />;
+}
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<ProtectedRoute><MainApp /></ProtectedRoute>} />
+      </Routes>
+    </Router>
   );
 }
 

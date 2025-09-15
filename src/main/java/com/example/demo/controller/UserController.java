@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,6 +27,42 @@ public class UserController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    // Signup: alias to create but limited fields
+    @PostMapping("/signup")
+    public ResponseEntity<User> signup(@RequestBody Map<String, String> payload) {
+        try {
+            User user = new User();
+            user.setFirstName(payload.getOrDefault("username", ""));
+            user.setLastName("");
+            user.setEmail(payload.get("email"));
+            user.setPassword(payload.get("password"));
+            User createdUser = userService.createUser(user);
+            // do not return password
+            createdUser.setPassword(null);
+            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+    
+    // Login: verify email and password
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        String password = payload.get("password");
+        Optional<User> userOpt = userService.getUserByEmail(email);
+        if (userOpt.isEmpty()) {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
+        boolean valid = userService.checkPassword(userOpt.get(), password);
+        if (!valid) {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
+        User user = userOpt.get();
+        user.setPassword(null);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
     
     // Get all
