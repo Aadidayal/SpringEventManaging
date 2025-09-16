@@ -25,7 +25,7 @@ public class UserController {
             User createdUser = userService.createUser(user);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
     
@@ -43,7 +43,7 @@ public class UserController {
             createdUser.setPassword(null);
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
     
@@ -79,7 +79,7 @@ public class UserController {
         if (user.isPresent()) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
     
@@ -90,7 +90,7 @@ public class UserController {
         if (user.isPresent()) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
