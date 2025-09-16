@@ -42,10 +42,17 @@ const eventService = {
   // Create new event
   createEvent: async (event) => {
     try {
-      const response = await axios.post(API_BASE_URL, event);
+      const response = await axios.post(API_BASE_URL, event, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
-      throw new Error('Failed to create event');
+      // Extract error message from backend response
+      const errorMessage = error.response?.data || error.message || 'Failed to create event';
+      throw new Error(errorMessage);
     }
   },
 

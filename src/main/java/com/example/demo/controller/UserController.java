@@ -2,14 +2,15 @@ package com.example.demo.controller;
 
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
+import com.example.demo.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Map;
+import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -29,39 +30,56 @@ public class UserController {
         }
     }
     
-    // Signup: alias to create but limited fields
+    // Signup endpoint with validation
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> signup(@RequestBody Map<String, String> payload) {
+        String username = payload.get("username");
+        String email = payload.get("email");
+        String password = payload.get("password");
+        
+        // Validate input
+        String validationError = ValidationUtil.validateSignupData(email, password, username);
+        if (validationError != null) {
+            return new ResponseEntity<>(validationError, HttpStatus.BAD_REQUEST);
+        }
+        
         try {
             User user = new User();
-            user.setFirstName(payload.getOrDefault("username", ""));
+            user.setFirstName(username);
             user.setLastName("");
-            user.setEmail(payload.get("email"));
-            user.setPassword(payload.get("password"));
+            user.setEmail(email);
+            user.setPassword(password);
+            
             User createdUser = userService.createUser(user);
-            // do not return password
-            createdUser.setPassword(null);
+            createdUser.setPassword(null); // Don't return password
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
         }
     }
     
-    // Login: verify email and password
+    // Login endpoint with validation
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         String password = payload.get("password");
+        
+        // Validate input
+        if (!ValidationUtil.isValidEmail(email)) {
+            return new ResponseEntity<>("Please enter a valid email", HttpStatus.BAD_REQUEST);
+        }
+        if (password == null || password.isEmpty()) {
+            return new ResponseEntity<>("Password is required", HttpStatus.BAD_REQUEST);
+        }
+        
+        // Check credentials
         Optional<User> userOpt = userService.getUserByEmail(email);
-        if (userOpt.isEmpty()) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        if (userOpt.isEmpty() || !userService.checkPassword(userOpt.get(), password)) {
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
         }
-        boolean valid = userService.checkPassword(userOpt.get(), password);
-        if (!valid) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
-        }
+        
         User user = userOpt.get();
-        user.setPassword(null);
+        user.setPassword(null); // Don't return password
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EventForm from './EventForm';
 import EventList from './EventList';
 import eventService from '../services/eventService';
@@ -8,6 +8,37 @@ const EventManagement = () => {
   const [refresh, setRefresh] = useState(false);
   const [activeTab, setActiveTab] = useState('list'); // 'list' or 'create'
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Get user info and check admin status
+    const authUser = localStorage.getItem('authUser');
+    if (authUser) {
+      const userData = JSON.parse(authUser);
+      setUser(userData);
+      
+      // Check if user is admin
+      const adminStatus = userData.email?.toLowerCase().includes('admin') || 
+                         userData.firstName?.toLowerCase() === 'admin';
+      setIsAdmin(adminStatus);
+    }
+  }, []);
+
+  // If not admin, show access denied message
+  if (!isAdmin) {
+    return (
+      <div className="event-management">
+        <div className="access-denied">
+          <div className="access-denied-content">
+            <h2>🚫 Access Denied</h2>
+            <p>Only administrators can manage events.</p>
+            <p>Please contact your administrator for access.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleEventCreated = async (eventData) => {
     try {
@@ -18,7 +49,8 @@ const EventManagement = () => {
       alert('Event created successfully!');
     } catch (error) {
       console.error('Error creating event:', error);
-      alert('Failed to create event. Please try again.');
+      // Re-throw the error so EventForm can handle it
+      throw error;
     } finally {
       setLoading(false);
     }

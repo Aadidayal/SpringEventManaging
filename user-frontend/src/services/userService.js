@@ -11,12 +11,7 @@ const userService = {
   // Get all users
   getAllUsers: async () => {
     try {
-      const response = await axios.get(API_BASE_URL, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.get(API_BASE_URL);
       return response.data;
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -47,12 +42,7 @@ const userService = {
   // Create new user
   createUser: async (user) => {
     try {
-      const response = await axios.post(API_BASE_URL, user, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.post(API_BASE_URL, user);
       return response.data;
     } catch (error) {
       throw new Error('Failed to create user');
@@ -65,7 +55,9 @@ const userService = {
       const response = await axios.post(`${API_BASE_URL}/signup`, { username, email, password });
       return response.data;
     } catch (error) {
-      throw new Error('Failed to signup');
+      // Extract the error message from the backend response
+      const errorMessage = error.response?.data || error.message || 'Failed to signup';
+      throw new Error(errorMessage);
     }
   },
 
@@ -75,7 +67,9 @@ const userService = {
       const response = await axios.post(`${API_BASE_URL}/login`, { email, password });
       return response.data;
     } catch (error) {
-      throw new Error('Failed to login');
+      // Extract the error message from the backend response
+      const errorMessage = error.response?.data || error.message || 'Failed to login';
+      throw new Error(errorMessage);
     }
   },
 

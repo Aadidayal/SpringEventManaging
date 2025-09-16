@@ -111,3 +111,46 @@
     justify-content: center;
   }
 }
+
+/* Access Denied Styles */
+.access-denied {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 40px 20px;
+}
+
+.access-denied-content {
+  text-align: center;
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-radius: 16px;
+  padding: 60px 40px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.access-denied-content h2 {
+  color: #ef4444;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.access-denied-content p {
+  color: #dc2626;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.access-denied-content p:last-child {
+  margin-bottom: 0;
+  font-style: italic;
+  opacity: 0.8;
+}

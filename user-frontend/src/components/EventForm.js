@@ -15,6 +15,36 @@ const EventForm = ({ onEventCreated, loading }) => {
 
   const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [error, setError] = useState('');
+
+  // Get minimum datetime (current date + 1 hour buffer)
+  const getMinDateTime = () => {
+    const now = new Date();
+    now.setHours(now.getHours() + 1); // Add 1 hour buffer
+    return now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+  };
+
+  // Validate event date
+  const validateEventDate = (dateTimeString) => {
+    if (!dateTimeString) return 'Event date and time are required';
+    
+    const selectedDate = new Date(dateTimeString);
+    const now = new Date();
+    
+    if (selectedDate <= now) {
+      return 'Event date and time must be in the future';
+    }
+    
+    // Optional: Check if it's too far in the future (e.g., 2 years)
+    const twoYearsFromNow = new Date();
+    twoYearsFromNow.setFullYear(twoYearsFromNow.getFullYear() + 2);
+    
+    if (selectedDate > twoYearsFromNow) {
+      return 'Event date cannot be more than 2 years in the future';
+    }
+    
+    return null; // No error
+  };
 
   // Fetch users for organizer dropdown
   useEffect(() => {
@@ -35,6 +65,18 @@ const EventForm = ({ onEventCreated, loading }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Clear previous error when user starts typing
+    if (error) setError('');
+    
+    // Special validation for eventDate
+    if (name === 'eventDate') {
+      const dateError = validateEventDate(value);
+      if (dateError) {
+        setError(dateError);
+      }
+    }
+    
     setEvent(prev => ({
       ...prev,
       [name]: value
@@ -43,15 +85,37 @@ const EventForm = ({ onEventCreated, loading }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Clear any previous errors
+    
+    // Basic required field validation
     if (!event.title || !event.eventDate || !event.location || !event.capacity || !event.organizerId) {
-      alert('Please fill all required fields');
+      setError('Please fill all required fields');
+      return;
+    }
+    
+    // Validate event date
+    const dateError = validateEventDate(event.eventDate);
+    if (dateError) {
+      setError(dateError);
+      return;
+    }
+    
+    // Validate capacity is a positive number
+    const capacity = parseInt(event.capacity);
+    if (isNaN(capacity) || capacity <= 0) {
+      setError('Event capacity must be a positive number');
+      return;
+    }
+    
+    if (capacity > 10000) {
+      setError('Event capacity cannot exceed 10,000 participants');
       return;
     }
     
     // Convert capacity to number
     const eventData = {
       ...event,
-      capacity: parseInt(event.capacity),
+      capacity: capacity,
       organizerId: parseInt(event.organizerId)
     };
     
@@ -67,14 +131,23 @@ const EventForm = ({ onEventCreated, loading }) => {
         capacity: '',
         organizerId: ''
       });
+      setError(''); // Clear error on success
     } catch (error) {
       console.error('Error in form submission:', error);
+      setError(error.message || 'Failed to create event. Please try again.');
     }
   };
 
   return (
     <div className="event-form-container">
       <h2>Create New Event</h2>
+      
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit} className="event-form">
         <input
           type="text"
@@ -98,10 +171,13 @@ const EventForm = ({ onEventCreated, loading }) => {
         <input
           type="datetime-local"
           name="eventDate"
+          placeholder="Event Date & Time *"
           value={event.eventDate}
           onChange={handleChange}
           disabled={loading}
+          min={getMinDateTime()}
           required
+          title="Event must be scheduled for a future date and time"
         />
         
         <input
@@ -122,7 +198,9 @@ const EventForm = ({ onEventCreated, loading }) => {
           onChange={handleChange}
           disabled={loading}
           min="1"
+          max="10000"
           required
+          title="Enter the maximum number of participants (1-10,000)"
         />
         
         <select
