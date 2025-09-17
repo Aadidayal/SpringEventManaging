@@ -30,7 +30,6 @@ public class UserController {
         }
     }
     
-    // Signup endpoint with validation
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody Map<String, String> payload) {
         String username = payload.get("username");
@@ -58,13 +57,12 @@ public class UserController {
         }
     }
     
-    // Login endpoint with validation
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         String password = payload.get("password");
         
-        // Validate input
+
         if (!ValidationUtil.isValidEmail(email)) {
             return new ResponseEntity<>("Please enter a valid email", HttpStatus.BAD_REQUEST);
         }
@@ -72,7 +70,6 @@ public class UserController {
             return new ResponseEntity<>("Password is required", HttpStatus.BAD_REQUEST);
         }
         
-        // Check credentials
         Optional<User> userOpt = userService.getUserByEmail(email);
         if (userOpt.isEmpty() || !userService.checkPassword(userOpt.get(), password)) {
             return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);

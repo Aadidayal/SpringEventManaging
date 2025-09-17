@@ -19,7 +19,6 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
-// check if already there
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");
         }
@@ -49,7 +48,6 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         
-        // Only update fields that are not null
         if (userDetails.getFirstName() != null) {
             user.setFirstName(userDetails.getFirstName());
         }

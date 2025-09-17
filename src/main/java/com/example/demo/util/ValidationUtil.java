@@ -12,7 +12,6 @@ public class ValidationUtil {
     }
     
     public static boolean isValidPassword(String password) {
-        // Password must be at least 6 characters long
         return password != null && password.length() >= 6;
     }
     
