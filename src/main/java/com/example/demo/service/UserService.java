@@ -19,7 +19,6 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User createUser(User user) {
-// check if already there
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");
         }
@@ -29,27 +28,22 @@ public class UserService {
         return userRepository.save(user);
     }
     
-    // Get all 
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
     
-    // Getby ID
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
     
-    // Get email
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
     
-    // Update 
     public User updateUser(Long id, User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         
-        // Only update fields that are not null
         if (userDetails.getFirstName() != null) {
             user.setFirstName(userDetails.getFirstName());
         }
@@ -66,7 +60,6 @@ public class UserService {
         return userRepository.save(user);
     }
     
-    // Delete 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
