@@ -40,7 +40,6 @@ public class UserRepositoryTest {
     @Test
     void testFindByEmail_ExistingUser() {
         Optional<User> found = userRepository.findByEmail("john.doe@example.com");
-        
         assertThat(found).isPresent();
         assertThat(found.get().getFirstName()).isEqualTo("John");
         assertThat(found.get().getEmail()).isEqualTo("john.doe@example.com");
@@ -49,7 +48,6 @@ public class UserRepositoryTest {
     @Test
     void testFindByEmail_NonExistentUser() {
         Optional<User> found = userRepository.findByEmail("nonexistent@example.com");
-        
         assertThat(found).isNotPresent();
     }
 
@@ -57,7 +55,8 @@ public class UserRepositoryTest {
     void testExistsByEmail() {
         boolean exists = userRepository.existsByEmail("john.doe@example.com");
         boolean notExists = userRepository.existsByEmail("new@example.com");
-                assertThat(exists).isTrue();
+        
+        assertThat(exists).isTrue();
         assertThat(notExists).isFalse();
     }
 
@@ -80,19 +79,22 @@ public class UserRepositoryTest {
     void testUpdateUser() {
         testUser.setFirstName("Johnny");
         testUser.setEmail("johnny@example.com");
+        
         User updated = userRepository.save(testUser);
         
         assertThat(updated.getFirstName()).isEqualTo("Johnny");
         assertThat(updated.getEmail()).isEqualTo("johnny@example.com");
-                Optional<User> found = userRepository.findById(testUser.getId());
+        
+        Optional<User> found = userRepository.findById(testUser.getId());
         assertThat(found.get().getFirstName()).isEqualTo("Johnny");
     }
 
     @Test
     void testDeleteUser() {
         Long userId = testUser.getId();
-                userRepository.deleteById(userId);
         
+        userRepository.deleteById(userId);
+
         assertThat(userRepository.findById(userId)).isNotPresent();
         assertThat(userRepository.existsByEmail("john.doe@example.com")).isFalse();
     }
@@ -121,9 +123,8 @@ public class UserRepositoryTest {
         admin.setPassword("admin123");
         userRepository.save(admin);
         
-        // When: Finding admin user
         Optional<User> foundAdmin = userRepository.findByEmail("admin@company.com");
-        
+
         assertThat(foundAdmin).isPresent();
         assertThat(foundAdmin.get().getFirstName().toLowerCase()).isEqualTo("admin");
         assertThat(foundAdmin.get().getEmail()).contains("admin");
@@ -131,7 +132,6 @@ public class UserRepositoryTest {
 
     @Test
     void testUserCount() {
-   
         long count = userRepository.count();
      
         assertThat(count).isEqualTo(1); 

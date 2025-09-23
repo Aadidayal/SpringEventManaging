@@ -24,7 +24,6 @@ public class EventController {
     @Autowired
     private UserService userService;
     
-    // Helper method to check if user is admin
     private boolean isAdmin(Long userId) {
         try {
             Optional<User> userOpt = userService.getUserById(userId);
@@ -39,7 +38,6 @@ public class EventController {
         }
     }
     
-    // Create - Only admins can create events
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody Map<String, Object> payload) {
         try {
@@ -51,12 +49,10 @@ public class EventController {
             
             Long organizerId = Long.valueOf(organizerIdObj.toString());
             
-            // Check if the organizer is an admin
             if (!isAdmin(organizerId)) {
                 return new ResponseEntity<>("Only admin users can create events", HttpStatus.FORBIDDEN);
             }
             
-            // Validate required fields
             if (payload.get("title") == null || payload.get("title").toString().trim().isEmpty()) {
                 return new ResponseEntity<>("Event title is required", HttpStatus.BAD_REQUEST);
             }
@@ -73,12 +69,10 @@ public class EventController {
                 return new ResponseEntity<>("Event capacity is required", HttpStatus.BAD_REQUEST);
             }
             
-            // Create event object from payload
             Event event = new Event();
             event.setTitle(payload.get("title").toString().trim());
             event.setDescription(payload.get("description") != null ? payload.get("description").toString().trim() : "");
             
-            // Parse and validate the datetime
             String dateTimeStr = payload.get("eventDate").toString();
             LocalDateTime eventDateTime;
             try {
@@ -87,13 +81,11 @@ public class EventController {
                 return new ResponseEntity<>("Invalid date format. Please use YYYY-MM-DDTHH:MM format", HttpStatus.BAD_REQUEST);
             }
             
-            // Validate that event is in the future
             LocalDateTime now = LocalDateTime.now();
             if (eventDateTime.isBefore(now) || eventDateTime.isEqual(now)) {
                 return new ResponseEntity<>("Event date and time must be in the future", HttpStatus.BAD_REQUEST);
             }
             
-            // Validate that event is not too far in the future (2 years)
             LocalDateTime twoYearsFromNow = now.plusYears(2);
             if (eventDateTime.isAfter(twoYearsFromNow)) {
                 return new ResponseEntity<>("Event date cannot be more than 2 years in the future", HttpStatus.BAD_REQUEST);
@@ -102,7 +94,6 @@ public class EventController {
             event.setEventDate(eventDateTime);
             event.setLocation(payload.get("location").toString().trim());
             
-            // Validate and set capacity
             Integer capacity;
             try {
                 capacity = Integer.valueOf(payload.get("capacity").toString());
@@ -119,7 +110,6 @@ public class EventController {
             event.setCapacity(capacity);
             event.setOrganizerId(organizerId);
             
-            // Set organizer name for easy display
             Optional<User> organizerOpt = userService.getUserById(organizerId);
             if (organizerOpt.isPresent()) {
                 User organizer = organizerOpt.get();
