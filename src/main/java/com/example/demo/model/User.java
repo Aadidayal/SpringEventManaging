@@ -33,10 +33,10 @@ public class User {
     private String email;
     
     @NotEmpty(message = "Password is mandatory")
-    @Size(min = 8, message = "Password requires minimum 8 characters")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(
-        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-        message = "Password needs: uppercase, lowercase, digit, special character"
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).{8,}$",
+        message = "Password must contain: 1 uppercase, 1 lowercase, 1 number, 1 special character (@$!%*?&)"
     )
     @Column(nullable = false)
     private String password;

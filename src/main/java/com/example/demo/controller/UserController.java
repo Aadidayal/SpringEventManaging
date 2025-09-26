@@ -48,7 +48,10 @@ public class UserController {
             createdUser.setPassword(null); // Don't return password
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            if (e.getMessage().contains("already exists")) {
+                return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>("Registration failed", HttpStatus.BAD_REQUEST);
         }
     }
     

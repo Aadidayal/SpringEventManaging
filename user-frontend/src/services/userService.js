@@ -49,14 +49,39 @@ const userService = {
     }
   },
 
-  // Signup (username, email, password)
-  signup: async ({ username, email, password }) => {
+  // Signup (firstName, lastName, email, password)
+  signup: async ({ firstName, lastName, email, password }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/signup`, { username, email, password });
+      const response = await axios.post(`${API_BASE_URL}/signup`, { firstName, lastName, email, password });
       return response.data;
     } catch (error) {
-      // Extract the error message from the backend response
-      const errorMessage = error.response?.data || error.message || 'Failed to signup';
+      console.error('Signup error:', error);
+      console.error('Error response:', error.response);
+      
+      // Handle different types of error responses
+      let errorMessage = 'Failed to signup';
+      
+      if (error.response) {
+        const data = error.response.data;
+        
+        // If it's a string message
+        if (typeof data === 'string') {
+          errorMessage = data;
+        }
+        // If it's an object with validation errors
+        else if (typeof data === 'object' && data !== null) {
+          if (data.message) {
+            errorMessage = data.message;
+          } else if (Object.keys(data).length > 0) {
+            // Handle validation errors object - show all errors
+            const errors = Object.entries(data).map(([field, message]) => `${field}: ${message}`);
+            errorMessage = errors.join(', ');
+          }
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       throw new Error(errorMessage);
     }
   },

@@ -189,9 +189,67 @@
   width: 100%;
 }
 
-.register-btn:hover {
+.register-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+.register-btn:disabled {
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Registration Status Styles */
+.registration-status {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.registered-badge {
+  background: rgba(34, 197, 94, 0.1);
+  color: #22c55e;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.cancel-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 0.85rem;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Capacity Warning */
+.capacity-warning {
+  color: #f59e0b !important;
+  font-weight: 600;
+}
+
+.capacity-warning .icon {
+  color: #f59e0b;
 }
 
 /* Loading State */
@@ -281,6 +339,105 @@
   }
 }
 
+/* My Registrations Section */
+.my-registrations-section {
+  margin-bottom: 48px;
+}
+
+.my-registrations-section h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.registered-events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.registered-event-card {
+  background: rgba(16, 185, 129, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.registered-event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.registration-info {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.registration-date {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-registrations {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-secondary);
+}
+
+.empty-registrations h4 {
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+/* Section Toggle */
+.section-toggle {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.toggle-btn {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
+  padding: 12px 24px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition-fast);
+  border-radius: 0;
+}
+
+.toggle-btn:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.toggle-btn:last-child {
+  border-radius: 0 8px 8px 0;
+  border-left: none;
+}
+
+.toggle-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.toggle-btn:hover:not(.active) {
+  background: var(--bg-hover);
+}
+
 @media (max-width: 480px) {
   .brand h1 {
     font-size: 1.5rem;
@@ -290,7 +447,22 @@
     font-size: 1.8rem;
   }
   
-  .event-card {
+  .event-card, .registered-event-card {
     padding: 16px;
+  }
+  
+  .section-toggle {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .toggle-btn:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .toggle-btn:last-child {
+    border-radius: 0 0 8px 8px;
+    border-left: 1px solid var(--border-primary);
+    border-top: none;
   }
 }

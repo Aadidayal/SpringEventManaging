@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.model.Event;
 import com.example.demo.model.User;
 import com.example.demo.repository.EventRepository;
+import com.example.demo.repository.EventRegistrationRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class EventService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private EventRegistrationRepository registrationRepository;
 
     public Event createEvent(Event event) {
         // organizer exists?
