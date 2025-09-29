@@ -22,14 +22,33 @@ public class UserController {
     @Autowired
     private UserService userService;
     
-    // Create 
+    // Create user (Admin function)
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult bindingResult) {
+        System.out.println("=== DEBUG: User Creation Request ===");
+        System.out.println("User data: " + user);
+        System.out.println("Has validation errors: " + bindingResult.hasErrors());
+        
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error -> {
+                System.out.println("Validation error - Field: " + error.getField() + ", Message: " + error.getDefaultMessage());
+                errors.put(error.getField(), error.getDefaultMessage());
+            });
+            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        }
+        
         try {
             User createdUser = userService.createUser(user);
+            createdUser.setPassword(null); // Don't return password
+            System.out.println("User created successfully: " + createdUser.getEmail());
             return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            System.out.println("Error creating user: " + e.getMessage());
+            if (e.getMessage().contains("already exists")) {
+                return new ResponseEntity<>("Email already exists", HttpStatus.BAD_REQUEST);
+            }
+            return new ResponseEntity<>("User creation failed", HttpStatus.BAD_REQUEST);
         }
     }
     

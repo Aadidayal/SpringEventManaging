@@ -9,6 +9,9 @@ import UserEditModal from './UserEditModal';
 import EventManagement from './EventManagement';
 import Message from './Message';
 
+// Import services
+import userService from '../services/userService';
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeModule, setActiveModule] = useState('events');
@@ -50,9 +53,39 @@ export default function AdminDashboard() {
     setTimeout(() => setMessage({ text: '', type: '' }), 5000);
   };
 
-  const handleUserCreated = () => {
-    showMessage('User created successfully!', 'success');
-    setRefreshTrigger(prev => prev + 1); // Trigger refresh
+  const handleUserCreated = async (userData) => {
+    try {
+      setLoading(true);
+      console.log('Creating user with data:', userData);
+      const createdUser = await userService.createUser(userData);
+      showMessage('User created successfully!', 'success');
+      setRefreshTrigger(prev => prev + 1); // Trigger refresh
+      console.log('User created:', createdUser);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      
+      // Handle different types of errors
+      let errorMessage = 'Failed to create user';
+      
+      if (error.response && error.response.data) {
+        console.log('Error response data:', error.response.data);
+        
+        if (typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        } else if (typeof error.response.data === 'object') {
+          // Handle validation errors object
+          const errors = error.response.data;
+          const errorMessages = Object.entries(errors).map(([field, message]) => `${field}: ${message}`);
+          errorMessage = errorMessages.length > 0 ? errorMessages.join(', ') : 'Validation failed';
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      showMessage(errorMessage, 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleRefresh = () => {

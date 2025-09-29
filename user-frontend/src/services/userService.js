@@ -42,10 +42,24 @@ const userService = {
   // Create new user
   createUser: async (user) => {
     try {
-      const response = await axios.post(API_BASE_URL, user);
+      const response = await axios.post(API_BASE_URL, user, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
       return response.data;
     } catch (error) {
-      throw new Error('Failed to create user');
+      // Extract error message from backend response
+      const errorMessage = error.response?.data || error.message || 'Failed to create user';
+      
+      // If it's a validation error object, extract the messages
+      if (typeof errorMessage === 'object' && errorMessage !== null) {
+        const errorMessages = Object.values(errorMessage);
+        throw new Error(errorMessages.join(', '));
+      }
+      
+      throw new Error(errorMessage);
     }
   },
 
